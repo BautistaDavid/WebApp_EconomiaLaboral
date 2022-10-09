@@ -26,10 +26,16 @@ X_scal[['edad','años_edc','estrato']] = scaler.transform(X[['edad','años_edc',
 
 # split for train and test sample 
 X_train, X_test, y_train, y_test  = train_test_split(X_scal,y,test_size=0.3,random_state=777)
+X_test.to_csv('data/X_test.csv',index=False)
+y_test.to_csv('data/y_test.csv',index=False)
+
+X_train.to_csv('data/X_train.csv',index=False)
+y_train.to_csv('data/y_train.csv',index=False)
 
 # 
 os_us = SMOTETomek()
 X_train_res, y_train_res = os_us.fit_resample(X_train, y_train)
+
 
 
 # Grid to improve hyperparameters 
@@ -42,12 +48,16 @@ X_train_res, y_train_res = os_us.fit_resample(X_train, y_train)
 # clf.best_params_
 
 # Modelinig a RandomForest 
-clf = RandomForestClassifier(criterion='gini',max_depth=20,n_estimators=120,random_state=777)
-clf.fit(X_train,y_train)
+clf = RandomForestClassifier(criterion='entropy',max_depth=None,n_estimators=100,random_state=777)
+clf.fit(X_train_res,y_train_res)
 
 # Using pickle to save the models 
 
 clf_pickle = open("model/clf_randomforest.pickle","wb")
 pkl.dump(clf,clf_pickle) 
-clf_pickle.close()                            
+clf_pickle.close()   
+
+
+
+
 
